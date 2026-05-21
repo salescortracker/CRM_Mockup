@@ -1,0 +1,141 @@
+<div class="tasks-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">CRM work queue</p>
+      <h1>Tasks</h1>
+      <p class="page-subtitle">Prioritize follow-ups, approvals, negotiation responses, and invoice work from one place.</p>
+    </div>
+    <div class="header-actions">
+      <span class="status-pill" *ngIf="activityMessage">{{ activityMessage }}</span>
+      <button class="btn btn-danger" type="button" (click)="createTask()">
+        <i class="fas fa-plus"></i>
+        Create Task
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div><span>Due today</span><strong>{{ dueTodayCount }}</strong></div>
+    <div><span>Overdue</span><strong>{{ overdueTasks }}</strong></div>
+    <div><span>High priority</span><strong>{{ highPriorityCount }}</strong></div>
+    <div><span>Completed</span><strong>{{ completedCount }}</strong></div>
+  </div>
+
+  <div class="tasks-layout">
+    <aside class="task-sidebar">
+      <div class="sidebar-section">
+        <h2>Views</h2>
+        <button type="button" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Tasks</button>
+        <button type="button" [class.active]="activeFilter === 'today'" (click)="setFilter('today')">Due Today</button>
+        <button type="button" [class.active]="activeFilter === 'overdue'" (click)="setFilter('overdue')">Overdue</button>
+        <button type="button" [class.active]="activeFilter === 'deal'" (click)="setFilter('deal')">Deal Tasks</button>
+        <button type="button" [class.active]="activeFilter === 'approval'" (click)="setFilter('approval')">Approvals</button>
+        <button type="button" [class.active]="activeFilter === 'completed'" (click)="setFilter('completed')">Completed</button>
+      </div>
+
+      <div class="task-builder">
+        <h2>Quick Task</h2>
+        <select class="form-control" [(ngModel)]="selectedTemplate" (change)="applyTemplate(selectedTemplate)">
+          <option value="">Use template</option>
+          <option *ngFor="let template of templates" [value]="template.id">{{ template.name }}</option>
+        </select>
+        <input class="form-control" [(ngModel)]="taskTitle" placeholder="Task title">
+        <select class="form-control" [(ngModel)]="taskAssignee">
+          <option *ngFor="let assignee of assignees" [value]="assignee">{{ assignee }}</option>
+        </select>
+        <div class="builder-row">
+          <input class="form-control" type="date" [(ngModel)]="taskDueDate">
+          <select class="form-control" [(ngModel)]="taskPriority">
+            <option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</option>
+          </select>
+        </div>
+        <select class="form-control" [(ngModel)]="taskRelationType">
+          <option *ngFor="let type of relationTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+        <input class="form-control" [(ngModel)]="taskRelationName" placeholder="Related record name">
+        <textarea class="form-control" rows="3" [(ngModel)]="taskNotes" placeholder="Notes"></textarea>
+        <button class="btn btn-danger w-100" type="button" (click)="createTask()">Add Task</button>
+      </div>
+    </aside>
+
+    <section class="task-list-panel">
+      <div class="list-toolbar">
+        <div>
+          <h2>Work Queue</h2>
+          <p>{{ filteredTasks.length }} tasks match this view</p>
+        </div>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="search" [(ngModel)]="filters.search" placeholder="Search tasks, owners, deals">
+        </div>
+      </div>
+
+      <div class="task-list">
+        <article
+          class="task-card"
+          *ngFor="let task of filteredTasks"
+          [class.selected]="selectedTask?.id === task.id"
+          [class.overdue]="isOverdue(task)"
+          (click)="selectTask(task)">
+          <div class="task-main">
+            <div>
+              <span class="task-type">{{ task.type }}</span>
+              <h3>{{ task.title }}</h3>
+              <p>{{ task.relationName }} • {{ task.nextAction }}</p>
+            </div>
+            <div class="task-badges">
+              <span class="priority-badge" [ngClass]="getPriorityBadgeClass(task.priority)">{{ task.priority }}</span>
+              <span class="status-badge" [ngClass]="getStatusClass(task.status)">{{ task.status }}</span>
+            </div>
+          </div>
+          <div class="task-meta">
+            <span><i class="fas fa-user"></i>{{ task.assignee }}</span>
+            <span><i class="fas fa-calendar"></i>{{ task.dueDate }}</span>
+            <span><i class="fas fa-link"></i>{{ task.relationType | titlecase }}</span>
+          </div>
+          <div class="quick-actions">
+            <button type="button" (click)="startTask(task); $event.stopPropagation()">Start</button>
+            <button type="button" (click)="markDone(task); $event.stopPropagation()">Done</button>
+            <button type="button" (click)="snoozeTask(task); $event.stopPropagation()">Snooze</button>
+            <button type="button" (click)="openNextAction(task); $event.stopPropagation()">Next</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="task-detail-panel" *ngIf="selectedTask">
+      <p class="eyebrow">{{ selectedTask.type }}</p>
+      <h2>{{ selectedTask.title }}</h2>
+      <p>{{ selectedTask.notes }}</p>
+
+      <div class="detail-grid">
+        <div><span>Status</span><strong>{{ selectedTask.status }}</strong></div>
+        <div><span>Priority</span><strong>{{ selectedTask.priority }}</strong></div>
+        <div><span>Due</span><strong>{{ selectedTask.dueDate }}</strong></div>
+        <div><span>Owner</span><strong>{{ selectedTask.assignee }}</strong></div>
+      </div>
+
+      <div class="related-record">
+        <span>{{ selectedTask.relationType | titlecase }}</span>
+        <strong>{{ selectedTask.relationName }}</strong>
+        <p>{{ selectedTask.nextAction }}</p>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn btn-danger" type="button" (click)="openNextAction(selectedTask)">Open Next Step</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="openRelated(selectedTask)">Open Related</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="createFollowUp(selectedTask)">Create Follow-up</button>
+        <button class="btn btn-success" type="button" (click)="markDone(selectedTask)">Mark Done</button>
+      </div>
+
+      <div class="approval-box" *ngIf="selectedTask.approvalStatus === 'Pending'">
+        <strong>Approval required</strong>
+        <p>This task is waiting for manager approval before the next step.</p>
+        <div class="approval-actions">
+          <button class="btn btn-success" type="button" (click)="approveTask(selectedTask)">Approve</button>
+          <button class="btn btn-outline-danger" type="button" (click)="rejectTask(selectedTask)">Reject</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

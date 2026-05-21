@@ -1,0 +1,334 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* ===== PRIMARY COLOR SCHEME ===== */
+:root {
+  --primary-red: #c41e3a;
+  --primary-red-hover: #a01830;
+  --primary-red-light: #f8d7da;
+  --text-dark: #212529;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --bg-light: #f8f9fa;
+}
+
+/* ===== CARDS ===== */
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+/* ===== METRICS CARD ===== */
+.metric-card {
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.metric-icon {
+  font-size: 2rem;
+  color: var(--primary-red);
+  margin-bottom: 1rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+/* ===== WELCOME BANNER ===== */
+.welcome-banner {
+  background: linear-gradient(
+    135deg,
+    var(--primary-red) 0%,
+    var(--primary-red-hover) 100%
+  );
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.welcome-banner h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-banner p {
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.welcome-avatar {
+  width: 60px;
+  height: 60px;
+  background: white;
+  color: var(--primary-red);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+/* ===== TABLES ===== */
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: var(--bg-light);
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: var(--bg-light);
+}
+
+.table tbody td {
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-red-hover);
+  border-color: var(--primary-red-hover);
+  color: white;
+}
+
+.btn-primary:focus {
+  background-color: var(--primary-red-hover);
+  border-color: var(--primary-red-hover);
+  box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-outline-secondary {
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--bg-light);
+  border-color: var(--primary-red);
+  color: var(--primary-red);
+}
+
+/* ===== BADGES ===== */
+.badge {
+  padding: 0.35rem 0.65rem;
+  font-weight: 500;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.badge-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.badge-info {
+  background-color: var(--primary-red);
+  color: white;
+}
+
+/* ===== FORMS ===== */
+.form-label {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+.form-select {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-red);
+  box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* ===== PAGINATION ===== */
+.pagination .page-link {
+  color: var(--primary-red);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+  color: white;
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--primary-red);
+  border-color: var(--primary-red);
+}
+
+.pagination .page-item.disabled .page-link {
+  color: var(--text-muted);
+  pointer-events: none;
+  background-color: var(--bg-light);
+  border-color: var(--border-color);
+}
+
+/* ===== SPINNER ===== */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+  color: var(--primary-red);
+}
+
+/* ===== ALERTS ===== */
+.alert {
+  border-radius: 6px;
+  border: none;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border-left: 4px solid var(--primary-red);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .welcome-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .welcome-avatar {
+    margin-top: 1rem;
+  }
+
+  .metric-card {
+    padding: 1.5rem;
+  }
+
+  .metric-value {
+    font-size: 1.75rem;
+  }
+}

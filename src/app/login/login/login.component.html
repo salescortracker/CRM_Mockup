@@ -1,0 +1,91 @@
+<div class="container" style="text-align: center;">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <h1>WELCOME TO CORTRACKER CRM</h1>
+    <p class="subtitle">Manage your customers, leads, and sales smarter.</p>
+
+    <div class="crm-features">
+      <div class="feature">
+        <i class="fa fa-user-tie"></i>
+        <div>
+          <strong>Lead Management</strong>
+          <p>Capture and track leads efficiently.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <i class="fa fa-funnel-dollar"></i>
+        <div>
+          <strong>Sales Pipeline</strong>
+          <p>Visualize deals and close faster.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <i class="fa fa-chart-bar"></i>
+        <div>
+          <strong>Insights & Reports</strong>
+          <p>Make data-driven decisions.</p>
+        </div>
+      </div>
+
+      <div class="feature">
+        <i class="fa fa-bolt"></i>
+        <div>
+          <strong>Automation</strong>
+          <p>Automate follow-ups and tasks.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="login-card">
+
+      <img src="/assets/images/cor-logo.png" width="200" height="100" class="logo" />
+
+      <h2>Sign In</h2>
+
+
+      <form (ngSubmit)="login()">
+
+        <div class="input-group">
+          <i class="fa fa-user"></i>
+          <input
+            type="text"
+            name="username"
+            [(ngModel)]="username"
+            placeholder="Username"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <i class="fa fa-lock"></i>
+          <input
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+
+        <div class="options">
+          <a routerLink="/forgot-password">Forgot Password?</a>
+        </div>
+
+        <button type="submit" [disabled]="loading">
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+        </button>
+
+        <p class="error">{{ errorMessage }}</p>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>

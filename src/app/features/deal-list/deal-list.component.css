@@ -1,0 +1,493 @@
+.deals-page {
+  min-height: calc(100vh - 120px);
+  padding: 32px 38px;
+  background: #f6f8fb;
+  color: #1f2933;
+}
+
+.page-header,
+.stats-strip,
+.filters-panel,
+.table-panel,
+.deal-sidebar,
+.deal-profile,
+.info-panel,
+.kanban-column {
+  background: #fff;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 28px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #c9143f;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 4px;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+h3 {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.page-subtitle,
+.muted,
+.timeline p,
+.deal-row small {
+  color: #667085;
+}
+
+.header-actions,
+.filters-panel,
+.profile-actions,
+.row-actions,
+.close-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.status-pill,
+.deal-status,
+.stage-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.status-pill {
+  background: #eef8f0;
+  color: #237a3b;
+}
+
+.view-toggle {
+  display: inline-grid;
+  grid-template-columns: repeat(2, 40px);
+  background: #eef2f6;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.view-toggle button {
+  height: 36px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #667085;
+}
+
+.view-toggle button.active {
+  background: #fff;
+  color: #c9143f;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+  margin-bottom: 18px;
+}
+
+.stats-strip div {
+  padding: 14px;
+  background: #f7f9fc;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+}
+
+.stats-strip span,
+.metric-grid span {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.stats-strip strong,
+.metric-grid strong {
+  font-size: 20px;
+}
+
+.filters-panel {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr auto;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.form-select,
+.form-control {
+  min-height: 44px;
+  border-radius: 7px;
+  border-color: #d8dee8;
+}
+
+.deal-row {
+  cursor: pointer;
+}
+
+.deal-row td {
+  vertical-align: middle;
+  padding: 16px 14px;
+}
+
+.deal-row:hover {
+  background: #fff8fa;
+}
+
+.deal-row strong,
+.deal-row small {
+  display: block;
+}
+
+.stage-pill {
+  background: #eef4ff;
+  color: #2454a6;
+}
+
+.deal-status {
+  background: #eef2f6;
+  color: #475467;
+}
+
+.status-open,
+.status-quote {
+  background: #eef4ff;
+  color: #2454a6;
+}
+
+.status-negotiation,
+.status-proposal {
+  background: #fff5e6;
+  color: #a15c05;
+}
+
+.status-won {
+  background: #eef8f0;
+  color: #237a3b;
+}
+
+.status-lost {
+  background: #fff1f3;
+  color: #ad1238;
+}
+
+.progress {
+  height: 8px;
+  background: #e8edf3;
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 120px;
+}
+
+.progress-bar {
+  background: #c9143f;
+}
+
+.icon-button {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #d8dee8;
+  border-radius: 7px;
+  background: #fff;
+  color: #52606d;
+}
+
+.icon-button:hover {
+  border-color: #c9143f;
+  color: #c9143f;
+}
+
+.icon-button.danger:hover {
+  background: #fff1f3;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(220px, 1fr));
+  gap: 14px;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  min-height: 420px;
+  padding: 14px;
+}
+
+.kanban-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.kanban-header span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.kanban-header b {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff1f3;
+  color: #c9143f;
+}
+
+.kanban-card {
+  padding: 12px;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.kanban-card:hover {
+  border-color: #c9143f;
+}
+
+.kanban-card strong,
+.kanban-card small {
+  display: block;
+}
+
+.kanban-card small {
+  color: #667085;
+}
+
+.kanban-card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-weight: 800;
+}
+
+.deal-detail-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 18px;
+}
+
+.deal-sidebar,
+.deal-profile {
+  padding: 16px;
+}
+
+.deal-sidebar {
+  position: sticky;
+  top: 16px;
+}
+
+.sidebar-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.deal-side-row {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  padding: 12px;
+  color: #1f2933;
+}
+
+.deal-side-row:hover,
+.deal-side-row.active {
+  background: #fff1f3;
+  border-color: #ffd5dd;
+}
+
+.deal-side-row small {
+  display: block;
+  color: #667085;
+}
+
+.profile-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e8edf3;
+  margin-bottom: 18px;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.lower-grid {
+  margin-top: 18px;
+}
+
+.info-panel {
+  padding: 20px;
+  box-shadow: none;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric-grid div {
+  background: #f7f9fc;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.probability-block {
+  margin-top: 16px;
+}
+
+.flow-list {
+  display: grid;
+  gap: 10px;
+}
+
+.flow-list button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  border: 1px solid #e8edf3;
+  border-radius: 8px;
+  background: #f7f9fc;
+  color: #1f2933;
+  font-weight: 800;
+  text-align: left;
+}
+
+.flow-list i {
+  color: #c9143f;
+}
+
+.timeline {
+  display: grid;
+  gap: 14px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.timeline-item > span {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fff1f3;
+  color: #c9143f;
+}
+
+.btn {
+  border-radius: 7px;
+  font-weight: 800;
+  min-height: 40px;
+}
+
+.btn-danger {
+  background: #c9143f;
+  border-color: #c9143f;
+}
+
+.loading-state {
+  min-height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  color: #667085;
+  font-weight: 800;
+}
+
+@media (max-width: 1200px) {
+  .kanban-board {
+    grid-template-columns: repeat(3, minmax(240px, 1fr));
+  }
+
+  .deal-detail-layout,
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .deal-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .deals-page {
+    padding: 20px 14px;
+  }
+
+  .page-header,
+  .profile-hero {
+    flex-direction: column;
+  }
+
+  .filters-panel,
+  .stats-strip,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-actions .btn,
+  .header-actions .btn {
+    width: 100%;
+  }
+}

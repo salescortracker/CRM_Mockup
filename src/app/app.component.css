@@ -1,0 +1,11 @@
+main {
+  padding: 20px;
+  min-height: calc(100vh - 60px);
+  background-color: #f8f9fa;
+}
+
+@media (max-width: 768px) {
+  main {
+    padding: 10px;
+  }
+}

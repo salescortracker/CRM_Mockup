@@ -1,0 +1,37 @@
+.insight-card {
+  border-radius: 18px;
+  min-height: 140px;
+}
+.insight-title {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+.insight-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+.campaign-form-card .campaign-channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.campaign-form-card .campaign-channels .btn {
+  min-width: 96px;
+}
+.template-card {
+  background: #f8f9fa;
+}
+.template-card .template-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.campaign-channel {
+  display: inline-block;
+  margin-right: 0.35rem;
+  background: #e9f5ff;
+  color: #0d6efd;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}

@@ -1,0 +1,285 @@
+<div class="deal-products-page container-fluid py-4">
+  <div *ngIf="message" class="alert toast-alert" [class]="'alert alert-' + message.type" role="alert">
+    <i class="fas fa-circle-info me-2"></i>{{ message.text }}
+  </div>
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading deal products</span>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading && deal">
+    <section class="deal-hero mb-4">
+      <div>
+        <div class="eyebrow">Deal workspace</div>
+        <h1>{{ deal.name }}</h1>
+        <div class="hero-meta">
+          <span><i class="fas fa-layer-group"></i>{{ deal.stage }}</span>
+          <span><i class="fas fa-bullseye"></i>{{ deal.probability }}% probability</span>
+          <span><i class="fas fa-user-tie"></i>{{ deal.owner?.firstName }} {{ deal.owner?.lastName }}</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn btn-outline-light" type="button" (click)="goToDealProfile()">
+          <i class="fas fa-arrow-left me-2"></i>Deal
+        </button>
+        <button class="btn btn-outline-light" type="button" (click)="goToNegotiation()">
+          <i class="fas fa-comments me-2"></i>Negotiate
+        </button>
+        <button class="btn btn-light" type="button" (click)="addRevenueSplit()">
+          <i class="fas fa-scale-balanced me-2"></i>Split
+        </button>
+        <button class="btn btn-outline-light" type="button" (click)="addLineItem()">
+          <i class="fas fa-plus me-2"></i>Product
+        </button>
+        <button class="btn btn-success" type="button" (click)="createQuote()" [disabled]="!deal.lineItems?.length">
+          <i class="fas fa-file-signature me-2"></i>Quote
+        </button>
+      </div>
+    </section>
+
+    <section class="summary-grid mb-4">
+      <div class="metric-tile">
+        <span>Total value</span>
+        <strong>{{ dealTotal | currency }}</strong>
+        <small>{{ deal.lineItems?.length || 0 }} products attached</small>
+      </div>
+      <div class="metric-tile">
+        <span>Discounts</span>
+        <strong>{{ discountTotal | currency }}</strong>
+        <small>{{ taxTotal | currency }} tax calculated</small>
+      </div>
+      <div class="metric-tile">
+        <span>Revenue split</span>
+        <strong [class.text-danger]="!isSplitBalanced">{{ splitTotal }}%</strong>
+        <small>{{ isSplitBalanced ? 'Balanced across owners' : 'Needs adjustment to 100%' }}</small>
+      </div>
+      <div class="metric-tile">
+        <span>Credit risk</span>
+        <strong>{{ approvalRisk }}</strong>
+        <small>{{ getCreditUsageLabel() }}</small>
+      </div>
+    </section>
+
+    <div class="row g-4">
+      <div class="col-xl-8">
+        <section class="workspace-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Products & line items</h2>
+              <p>Build the quote from products, discounts, taxes, and implementation details.</p>
+            </div>
+            <button class="btn btn-primary" type="button" (click)="addLineItem()">
+              <i class="fas fa-plus me-2"></i>Add product
+            </button>
+          </div>
+
+          <form *ngIf="showLineItemForm" class="inline-editor mb-3" (ngSubmit)="saveLineItem()">
+            <div class="row g-3">
+              <div class="col-md-5">
+                <label class="form-label">Product name</label>
+                <input class="form-control" name="productName" [(ngModel)]="lineItemForm.productName" placeholder="Implementation package" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Qty</label>
+                <input class="form-control" type="number" min="1" name="quantity" [(ngModel)]="lineItemForm.quantity" (input)="updateLineItemTotal()" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Unit price</label>
+                <input class="form-control" type="number" min="0" name="unitPrice" [(ngModel)]="lineItemForm.unitPrice" (input)="updateLineItemTotal()" />
+              </div>
+              <div class="col-md-1">
+                <label class="form-label">Disc. %</label>
+                <input class="form-control" type="number" min="0" max="100" name="discount" [(ngModel)]="lineItemForm.discount" (input)="updateLineItemTotal()" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Tax %</label>
+                <input class="form-control" type="number" min="0" name="tax" [(ngModel)]="lineItemForm.tax" (input)="updateLineItemTotal()" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" rows="2" name="description" [(ngModel)]="lineItemForm.description" placeholder="Scope, billing note, or delivery detail"></textarea>
+              </div>
+            </div>
+            <div class="editor-actions">
+              <span>Line total: <strong>{{ lineItemForm.total | currency }}</strong></span>
+              <div>
+                <button class="btn btn-outline-secondary me-2" type="button" (click)="showLineItemForm = false">Cancel</button>
+                <button class="btn btn-primary" type="submit">Save product</button>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf="deal.lineItems?.length; else noProducts" class="line-item-list">
+            <article class="line-item" *ngFor="let item of deal.lineItems">
+              <div class="item-main">
+                <div class="product-icon"><i class="fas fa-box"></i></div>
+                <div>
+                  <h3>{{ item.productName }}</h3>
+                  <p>{{ item.description || 'No description added' }}</p>
+                  <div class="item-tags">
+                    <span>{{ item.quantity }} x {{ item.unitPrice | currency }}</span>
+                    <span *ngIf="item.discount">Discount {{ item.discount }}% ({{ getDiscountAmount(item) | currency }})</span>
+                    <span *ngIf="item.tax">Tax {{ item.tax }}% ({{ getTaxAmount(item) | currency }})</span>
+                  </div>
+                </div>
+              </div>
+              <div class="item-total">
+                <strong>{{ item.total | currency }}</strong>
+                <button class="icon-button danger" type="button" title="Remove product" (click)="removeLineItem(item.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <ng-template #noProducts>
+            <div class="empty-state">
+              <i class="fas fa-box-open"></i>
+              <h3>No products yet</h3>
+              <p>Add products to calculate the quote and invoice totals.</p>
+              <button class="btn btn-primary" type="button" (click)="addLineItem()">Add first product</button>
+            </div>
+          </ng-template>
+        </section>
+
+        <section class="workspace-panel mt-4">
+          <div class="panel-header">
+            <div>
+              <h2>Deal automation workflow</h2>
+              <p>Track the product-to-cash flow from discovery through closure.</p>
+            </div>
+            <button class="btn btn-outline-primary" type="button" (click)="advanceStage()">Advance stage</button>
+          </div>
+
+          <div class="stage-track">
+            <div class="stage-progress" [style.width.%]="getWorkflowProgress()"></div>
+            <div class="stage-step" *ngFor="let stage of workflowStages" [class]="getStageState(stage)">
+              <span><i class="fas fa-check"></i></span>
+              <strong>{{ stage }}</strong>
+            </div>
+          </div>
+
+          <div class="workflow-note">
+            <i class="fas fa-bolt"></i>
+            <span>{{ deal.stage }} is active. Quote, approval, invoice, and payment steps stay visible so the team can move the deal without hunting across screens.</span>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-xl-4">
+        <section class="workspace-panel">
+          <div class="panel-header compact">
+            <div>
+              <h2>Revenue splits</h2>
+              <p>Commission ownership and split health.</p>
+            </div>
+          </div>
+
+          <form *ngIf="showRevenueSplitForm" class="inline-editor mb-3" (ngSubmit)="saveRevenueSplit()">
+            <div class="row g-2">
+              <div class="col-6">
+                <input class="form-control" name="firstName" [(ngModel)]="revenueSplitForm.firstName" placeholder="First name" />
+              </div>
+              <div class="col-6">
+                <input class="form-control" name="lastName" [(ngModel)]="revenueSplitForm.lastName" placeholder="Last name" />
+              </div>
+              <div class="col-6">
+                <label class="form-label">Split %</label>
+                <input class="form-control" type="number" min="0" max="100" name="splitPercentage" [(ngModel)]="revenueSplitForm.splitPercentage" />
+              </div>
+              <div class="col-6">
+                <label class="form-label">Commission %</label>
+                <input class="form-control" type="number" min="0" name="commissionRate" [(ngModel)]="revenueSplitForm.commissionRate" />
+              </div>
+            </div>
+            <div class="editor-actions">
+              <button class="btn btn-outline-secondary" type="button" (click)="showRevenueSplitForm = false">Cancel</button>
+              <button class="btn btn-primary" type="submit">Save</button>
+            </div>
+          </form>
+
+          <div class="split-list">
+            <div class="split-row" *ngFor="let split of deal.revenueSplits">
+              <div class="avatar">{{ split.user?.firstName?.charAt(0) }}{{ split.user?.lastName?.charAt(0) }}</div>
+              <div>
+                <strong>{{ split.user?.firstName }} {{ split.user?.lastName }}</strong>
+                <span>{{ split.commission | currency }} commission</span>
+              </div>
+              <div class="split-percent">{{ split.splitPercentage }}%</div>
+            </div>
+          </div>
+
+          <div class="split-health" [class.warning]="!isSplitBalanced">
+            <span>Total split</span>
+            <strong>{{ splitTotal }}%</strong>
+          </div>
+
+          <button class="btn btn-outline-primary w-100 mt-3" type="button" (click)="addRevenueSplit()">
+            <i class="fas fa-user-plus me-2"></i>Add revenue split
+          </button>
+        </section>
+
+        <section class="workspace-panel mt-4">
+          <div class="panel-header compact">
+            <div>
+              <h2>Approval & credit</h2>
+              <p>Finance readiness before invoice creation.</p>
+            </div>
+          </div>
+
+          <div class="risk-meter">
+            <div class="risk-label">
+              <span>Risk score</span>
+              <strong>{{ approvalRisk }}</strong>
+            </div>
+            <div class="progress">
+              <div class="progress-bar" [ngClass]="getCreditUsageClass()" [style.width.%]="getCreditUsagePercent()"></div>
+            </div>
+            <small>{{ getCreditUsageLabel() }}</small>
+          </div>
+
+          <button class="btn btn-outline-secondary w-100 mt-3" type="button" (click)="requestApproval()">
+            <i class="fas fa-paper-plane me-2"></i>Request approval
+          </button>
+        </section>
+
+        <section class="workspace-panel mt-4">
+          <div class="panel-header compact">
+            <div>
+              <h2>Quote & invoice</h2>
+              <p>Commercial documents generated from line items.</p>
+            </div>
+          </div>
+
+          <div class="document-card">
+            <div>
+              <span>Quote</span>
+              <strong>{{ quote?.quoteNumber || 'Not created' }}</strong>
+            </div>
+            <span class="badge" [class]="'badge bg-' + getStatusColor(quote?.status)">{{ quote?.status || 'pending' }}</span>
+          </div>
+
+          <div class="document-card">
+            <div>
+              <span>Invoice</span>
+              <strong>{{ invoice?.invoiceNumber || 'Not created' }}</strong>
+            </div>
+            <span class="badge" [class]="'badge bg-' + getStatusColor(invoice?.status)">{{ invoice?.status || 'pending' }}</span>
+          </div>
+
+          <div class="document-summary">
+            <div><span>Quote total</span><strong>{{ (quote?.totalAmount || dealTotal) | currency }}</strong></div>
+            <div><span>Invoice due</span><strong>{{ invoice?.dueDate ? (invoice?.dueDate | date:'mediumDate') : 'After quote' }}</strong></div>
+          </div>
+
+          <button class="btn btn-success w-100 mt-3" type="button" (click)="createInvoice()" [disabled]="!quote || !!invoice">
+            <i class="fas fa-file-invoice-dollar me-2"></i>Create invoice
+          </button>
+        </section>
+      </div>
+    </div>
+  </ng-container>
+</div>

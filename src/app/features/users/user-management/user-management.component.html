@@ -1,0 +1,83 @@
+<div class="users-page">
+  <div class="page-header">
+    <div>
+      <p class="eyebrow">Access control</p>
+      <h1>Users</h1>
+      <p class="page-subtitle">Show who owns deals, tasks, permissions, and CRM access in the demo system.</p>
+    </div>
+    <span class="status-pill" *ngIf="activityMessage">{{ activityMessage }}</span>
+  </div>
+
+  <div class="users-layout">
+    <aside class="user-form-panel">
+      <h2>{{ editingUserId ? 'Edit User' : 'Add User' }}</h2>
+      <input class="form-control" placeholder="Email" [(ngModel)]="newUser.email">
+      <input class="form-control" placeholder="First name" [(ngModel)]="newUser.firstName">
+      <input class="form-control" placeholder="Last name" [(ngModel)]="newUser.lastName">
+      <select class="form-control" [(ngModel)]="newUser.role">
+        <option [ngValue]="undefined">Select role</option>
+        <option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</option>
+      </select>
+      <select class="form-control" [(ngModel)]="newUser.permissionGroup">
+        <option [ngValue]="undefined">Permission group</option>
+        <option *ngFor="let group of permissionGroups" [value]="group">{{ group }}</option>
+      </select>
+      <input class="form-control" placeholder="Department" [(ngModel)]="newUser.department">
+      <input class="form-control" placeholder="Phone" [(ngModel)]="newUser.phone">
+      <div class="form-actions">
+        <button class="btn btn-outline-secondary" type="button" (click)="resetForm()">Reset</button>
+        <button *ngIf="!editingUserId" class="btn btn-danger" type="button" (click)="saveUser()">Add User</button>
+        <button *ngIf="editingUserId" class="btn btn-danger" type="button" (click)="updateUser()">Update</button>
+      </div>
+    </aside>
+
+    <section class="user-list-panel">
+      <article
+        class="user-card"
+        *ngFor="let user of users"
+        [class.active]="selectedUser?.id === user.id"
+        (click)="selectUser(user)">
+        <span class="avatar">{{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}</span>
+        <div>
+          <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+          <p>{{ user.email }} • {{ user.department }}</p>
+          <div class="user-badges">
+            <span class="role-badge" [ngClass]="getRoleClass(user.role)">{{ user.role | titlecase }}</span>
+            <span [class.inactive]="!user.active">{{ user.active ? 'Active' : 'Inactive' }}</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <aside class="user-detail-panel" *ngIf="selectedUser">
+      <p class="eyebrow">{{ selectedUser.permissionGroup }}</p>
+      <h2>{{ selectedUser.firstName }} {{ selectedUser.lastName }}</h2>
+      <p>{{ selectedUser.email }}</p>
+      <div class="detail-grid">
+        <div><span>Owned deals</span><strong>{{ selectedUser.ownedDeals }}</strong></div>
+        <div><span>Open tasks</span><strong>{{ selectedUser.openTasks }}</strong></div>
+        <div><span>Pipeline</span><strong>{{ selectedUser.pipelineValue | currency:'USD':'symbol':'1.0-0' }}</strong></div>
+        <div><span>Status</span><strong>{{ selectedUser.active ? 'Active' : 'Inactive' }}</strong></div>
+      </div>
+      <div class="permission-box">
+        <h3>Field Access Control</h3>
+        <label *ngFor="let field of fieldAccessOptions">
+          <input type="checkbox" [(ngModel)]="field.enabled">
+          {{ field.label }}
+        </label>
+      </div>
+      <div class="permission-actions">
+        <button class="btn btn-outline-secondary" *ngFor="let group of permissionGroups" type="button" (click)="assignPermissionGroup(selectedUser, group)">
+          {{ group }}
+        </button>
+      </div>
+      <div class="actions">
+        <button class="btn btn-danger" type="button" (click)="editUser(selectedUser)">Edit User</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="toggleUser(selectedUser)">{{ selectedUser.active ? 'Deactivate' : 'Activate' }}</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="openDeals()">Owned Deals</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="openTasks()">Open Tasks</button>
+        <button class="btn btn-outline-danger" type="button" (click)="deleteUser(selectedUser.id)">Remove</button>
+      </div>
+    </aside>
+  </div>
+</div>

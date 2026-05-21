@@ -1,0 +1,237 @@
+<div class="engagement-page container-fluid py-4">
+  <div class="hero-card p-4 rounded-4 mb-4 shadow-sm">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
+      <div>
+        <h1 class="display-6 mb-3">{{ heroTitle }}</h1>
+        <p class="text-muted lead">{{ heroSubtitle }}</p>
+      </div>
+      <div class="hero-actions text-lg-end">
+        <button class="btn btn-primary btn-lg me-2">Create Workflow</button>
+        <button class="btn btn-outline-secondary btn-lg">Connect Channel</button>
+      </div>
+    </div>
+
+    <div class="row mt-4 gy-3">
+      <div class="col-sm-6 col-lg-3" *ngFor="let item of metrics">
+        <div class="engagement-metric-card p-3 rounded-3 border">
+          <div class="d-flex align-items-center gap-3">
+            <div class="metric-icon bg-{{ item.variant }} text-white rounded-circle d-flex align-items-center justify-content-center">
+              <i class="fas {{ item.icon }}"></i>
+            </div>
+            <div>
+              <div class="metric-label text-uppercase text-muted small">{{ item.label }}</div>
+              <div class="metric-value h4 mb-0">{{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row gy-4">
+    <div class="col-xl-7">
+      <div class="card section-card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0"><i class="fas fa-phone-volume me-2"></i> Call & Meeting Activity</h5>
+            <small class="text-muted">Log calls, review dispositions, play recordings and schedule meetings with calendar sync.</small>
+          </div>
+          <span class="badge bg-success">Real-time</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+              <thead class="table-light">
+                <tr>
+                  <th>Contact</th>
+                  <th>Type</th>
+                  <th>Channel</th>
+                  <th>Disposition</th>
+                  <th>Duration</th>
+                  <th>Notes</th>
+                  <th class="text-end">Record</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let call of callLogs">
+                  <td>
+                    <strong>{{ call.contact }}</strong><br />
+                    <small class="text-muted">{{ call.company }}</small>
+                  </td>
+                  <td>{{ call.type }}</td>
+                  <td>{{ call.channel }}</td>
+                  <td>
+                    <select class="form-select form-select-sm" [(ngModel)]="call.disposition" (change)="recordDisposition(call, call.disposition)">
+                      <option *ngFor="let disposition of callDispositions" [value]="disposition">{{ disposition }}</option>
+                    </select>
+                  </td>
+                  <td>{{ call.duration }}</td>
+                  <td>{{ call.notes }}</td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" [href]="call.recordingUrl">Play</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card section-card shadow-sm mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="fas fa-calendar-day me-2"></i> Schedule Meeting</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Meeting Title</label>
+              <input type="text" class="form-control" [(ngModel)]="meetingTitle" placeholder="Discuss proposal" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contact</label>
+              <input type="text" class="form-control" [(ngModel)]="meetingContact" placeholder="Client or lead name" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-control" [(ngModel)]="meetingDate" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Time</label>
+              <input type="time" class="form-control" [(ngModel)]="meetingTime" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Calendar</label>
+              <select class="form-select" [(ngModel)]="meetingCalendar">
+                <option value="Google">Google</option>
+                <option value="Outlook">Outlook</option>
+                <option value="Teams">Teams</option>
+              </select>
+            </div>
+            <div class="col-12 text-end">
+              <button class="btn btn-primary" (click)="scheduleMeeting()">Schedule Meeting</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card section-card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="fas fa-comments me-2"></i> WhatsApp / SMS Tracking</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item" *ngFor="let message of messageLogs">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>{{ message.contact }}</strong>
+                  <div class="small text-muted">{{ message.channel }} • {{ message.direction }}</div>
+                </div>
+                <div class="text-muted small">{{ message.time }}</div>
+              </div>
+              <p class="mb-0 mt-2">{{ message.snippet }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-5">
+      <div class="card section-card shadow-sm mb-4">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-robot me-2"></i> Workflow Automation Engine</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">Create event-based and time-based automation rules with email, task and notification actions.</p>
+          <div class="mb-4">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Workflow Name</label>
+                <input class="form-control" [(ngModel)]="workflowName" placeholder="New workflow name" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Trigger</label>
+                <input class="form-control" [(ngModel)]="workflowTrigger" placeholder="Lead stage changes to Proposal" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Action</label>
+                <input class="form-control" [(ngModel)]="workflowAction" placeholder="Send follow-up email" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Trigger Type</label>
+                <select class="form-select" [(ngModel)]="workflowType">
+                  <option value="Event-Based">Event-Based</option>
+                  <option value="Time-Based">Time-Based</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Enabled</label>
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="workflowEnabled" id="workflowEnabled" />
+                  <label class="form-check-label" for="workflowEnabled">Active</label>
+                </div>
+              </div>
+              <div class="col-12 text-end">
+                <button class="btn btn-success" (click)="addAutomationRule()">Create Rule</button>
+              </div>
+            </div>
+          </div>
+          <div class="workflow-template-section mb-4">
+            <h6>Workflow Templates</h6>
+            <div class="row g-3">
+              <div class="col-md-12" *ngFor="let template of workflowTemplates">
+                <div class="template-card p-3 rounded-3 border d-flex justify-content-between align-items-start gap-3">
+                  <div>
+                    <strong>{{ template.name }}</strong>
+                    <p class="mb-1 text-muted small">{{ template.description }}</p>
+                    <div class="small text-muted">Trigger: {{ template.trigger }}</div>
+                    <div class="small text-muted">Action: {{ template.action }}</div>
+                  </div>
+                  <button class="btn btn-sm btn-outline-primary" (click)="selectTemplate(template.id)">Use</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h6 class="mb-3">Active Rules</h6>
+            <div class="list-group">
+              <div class="list-group-item" *ngFor="let rule of automationRules">
+                <div class="d-flex justify-content-between align-items-start gap-3">
+                  <div>
+                    <strong>{{ rule.name }}</strong>
+                    <div class="small text-muted">{{ rule.type }} • Trigger: {{ rule.trigger }}</div>
+                    <div class="small text-muted">Action: {{ rule.action }}</div>
+                  </div>
+                  <div class="text-end">
+                    <span class="badge" [class.bg-success]="rule.enabled" [class.bg-secondary]="!rule.enabled">{{ rule.enabled ? 'Enabled' : 'Paused' }}</span>
+                    <button class="btn btn-sm btn-link mt-2" type="button" (click)="toggleRule(rule)">{{ rule.enabled ? 'Pause' : 'Enable' }}</button>
+                  </div>
+                </div>
+                <div class="small text-muted mt-2">Last run: {{ rule.lastRun }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card section-card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-comments me-2"></i> Channel Sync & Messaging</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">Track WhatsApp and SMS threads, message status, and communication outcomes in one feed.</p>
+          <div class="row g-3">
+            <div class="col-12" *ngFor="let card of channelCards">
+              <div class="feature-card p-3 rounded-3 border">
+                <div class="feature-icon bg-light rounded-circle text-danger"><i class="fas {{ card.icon }}"></i></div>
+                <div>
+                  <h6>{{ card.title }}</h6>
+                  <p class="mb-0 text-muted">{{ card.description }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

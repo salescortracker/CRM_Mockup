@@ -1,0 +1,182 @@
+<div class="negotiation-page">
+  <div *ngIf="loading" class="loading-state">
+    <span class="spinner-border"></span>
+    Loading negotiation
+  </div>
+
+  <ng-container *ngIf="!loading && deal">
+    <div class="page-header">
+      <div>
+        <p class="eyebrow">Negotiation workspace</p>
+        <h1>{{ deal.name }}</h1>
+        <p>{{ deal.amount | currency:'USD':'symbol':'1.0-0' }} • {{ deal.stage }} • {{ deal.probability }}% probability</p>
+      </div>
+      <div class="header-actions">
+        <span class="status-pill" *ngIf="message">{{ message }}</span>
+        <button class="btn btn-outline-secondary" type="button" (click)="openDeal()">
+          <i class="fas fa-arrow-left"></i>
+          Deal Profile
+        </button>
+        <button class="btn btn-danger" type="button" (click)="sendProposal()">
+          <i class="fas fa-paper-plane"></i>
+          Send Proposal
+        </button>
+      </div>
+    </div>
+
+    <div class="snapshot-grid">
+      <section class="snapshot-card">
+        <span>Status</span>
+        <strong class="badge" [class]="'bg-' + getStatusColor(deal.status)">{{ getStatusLabel(deal.status) | titlecase }}</strong>
+      </section>
+      <section class="snapshot-card">
+        <span>Quote</span>
+        <strong>{{ deal.quoteId || 'Not created' }}</strong>
+      </section>
+      <section class="snapshot-card">
+        <span>Invoice</span>
+        <strong>{{ deal.invoiceId || 'Not created' }}</strong>
+      </section>
+      <section class="snapshot-card">
+        <span>Payment</span>
+        <strong class="badge" [class]="'bg-' + getPaymentStatusColor(deal.paymentStatus)">{{ deal.paymentStatus || 'Pending' }}</strong>
+      </section>
+    </div>
+
+    <div class="workspace-grid">
+      <section class="action-panel">
+        <h2>Next Actions</h2>
+        <button class="action-button" type="button" (click)="addNote()">
+          <i class="fas fa-comment"></i>
+          <span>Add Negotiation Note</span>
+        </button>
+        <button class="action-button" type="button" (click)="viewProducts()">
+          <i class="fas fa-box"></i>
+          <span>View Products and Quote</span>
+        </button>
+        <button class="action-button" type="button" (click)="viewQuote()">
+          <i class="fas fa-file-invoice"></i>
+          <span>{{ deal.quoteId ? 'View Quote Status' : 'Create Quote' }}</span>
+        </button>
+        <div class="close-actions">
+          <button class="btn btn-success" type="button" (click)="closeWon()">
+            <i class="fas fa-check"></i>
+            Mark Won
+          </button>
+          <button class="btn btn-outline-danger" type="button" (click)="closeLost()">
+            <i class="fas fa-times"></i>
+            Mark Lost
+          </button>
+        </div>
+      </section>
+
+      <section class="note-panel" *ngIf="showNoteForm">
+        <h2>Add Note</h2>
+        <label>
+          Negotiation Point
+          <input class="form-control" [(ngModel)]="noteForm.negotiationPoint" placeholder="Pricing, timeline, payment terms">
+        </label>
+        <label>
+          Note
+          <textarea class="form-control" rows="4" [(ngModel)]="noteForm.note" placeholder="What was discussed?"></textarea>
+        </label>
+        <label>
+          Customer Response
+          <input class="form-control" [(ngModel)]="noteForm.response" placeholder="Optional response">
+        </label>
+        <label>
+          Status
+          <select class="form-control" [(ngModel)]="noteForm.status">
+            <option value="proposed">Proposed</option>
+            <option value="counter_proposed">Counter Proposed</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </label>
+        <div class="form-actions">
+          <button class="btn btn-outline-secondary" type="button" (click)="showNoteForm = false">Cancel</button>
+          <button class="btn btn-danger" type="button" (click)="saveNote()">Save Note</button>
+        </div>
+      </section>
+
+      <section class="note-panel counter-panel" *ngIf="showCounterForm && selectedNote">
+        <h2>Counter Offer</h2>
+        <p>{{ selectedNote.negotiationPoint }}</p>
+        <label>
+          Counter Amount
+          <input class="form-control" type="number" [(ngModel)]="counterForm.amount" placeholder="72000">
+        </label>
+        <label>
+          Counter Terms
+          <textarea class="form-control" rows="4" [(ngModel)]="counterForm.terms" placeholder="Quarterly billing, 6-month commitment, revised SLA, etc."></textarea>
+        </label>
+        <label>
+          Expected Response Date
+          <input class="form-control" type="date" [(ngModel)]="counterForm.responseDate">
+        </label>
+        <div class="form-actions">
+          <button class="btn btn-outline-secondary" type="button" (click)="cancelCounterOffer()">Cancel</button>
+          <button class="btn btn-danger" type="button" (click)="saveCounterOffer()">Save Counter</button>
+        </div>
+      </section>
+
+      <section class="note-panel selected-note-panel" *ngIf="!showNoteForm && !showCounterForm && selectedNote">
+        <h2>{{ selectedNote.negotiationPoint }}</h2>
+        <p>{{ selectedNote.note }}</p>
+        <div class="selected-note-meta">
+          <span>Proposed by</span>
+          <strong>{{ selectedNote.proposedBy }}</strong>
+        </div>
+        <div class="selected-note-meta" *ngIf="selectedNote.respondedBy">
+          <span>Responded by</span>
+          <strong>{{ selectedNote.respondedBy }}</strong>
+        </div>
+        <div class="response-text" *ngIf="selectedNote.response">{{ selectedNote.response }}</div>
+        <div class="note-action-grid">
+          <button class="btn btn-success" type="button" (click)="updateSelectedNote('accepted')">
+            {{ selectedNote.status === 'counter_proposed' ? 'Accept Counter' : 'Accept' }}
+          </button>
+          <button class="btn btn-outline-secondary" type="button" (click)="updateSelectedNote('counter_proposed')">
+            {{ selectedNote.status === 'counter_proposed' ? 'Revise Counter' : 'Counter' }}
+          </button>
+          <button class="btn btn-outline-danger" type="button" (click)="updateSelectedNote('rejected')">
+            {{ selectedNote.status === 'counter_proposed' ? 'Reject Counter' : 'Reject' }}
+          </button>
+        </div>
+      </section>
+
+      <section class="timeline-panel">
+        <div class="section-heading">
+          <h2>Negotiation Timeline</h2>
+          <button class="btn btn-sm btn-danger" type="button" (click)="addNote()">Add Note</button>
+        </div>
+        <div class="timeline">
+          <article
+            class="timeline-item clickable"
+            *ngFor="let note of deal.negotiationNotes"
+            [class.active]="selectedNote?.id === note.id"
+            (click)="selectNote(note)"
+            tabindex="0">
+            <span class="timeline-icon" [class]="'status-' + note.status"></span>
+            <div>
+              <div class="timeline-title">
+                <strong>{{ note.negotiationPoint }}</strong>
+                <span class="badge" [class]="'bg-' + getNoteStatusColor(note.status)">{{ getStatusLabel(note.status) | titlecase }}</span>
+              </div>
+              <p>{{ note.note }}</p>
+              <small>
+                Proposed by {{ note.proposedBy }}
+                <ng-container *ngIf="note.respondedBy"> • Responded by {{ note.respondedBy }}</ng-container>
+              </small>
+              <p *ngIf="note.response" class="response-text">{{ note.response }}</p>
+            </div>
+          </article>
+          <div *ngIf="!deal.negotiationNotes?.length" class="empty-state">
+            <i class="fas fa-history"></i>
+            No negotiation notes yet
+          </div>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+</div>
